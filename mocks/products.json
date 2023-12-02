@@ -1,0 +1,35 @@
+{
+  "plugins": [
+    {
+      "name": "delay",
+      "args": {"duration": 500}
+    }
+  ],
+  "request": {
+    "scheme": "http",
+    "host": "localhost",
+    "port": 3030,
+    "method": "get",
+    "path": "/products",
+    "headers": {
+      "content-type": "application/json"
+    }
+  },
+  "response": {
+    "statusCode": 200,
+    "headers": {
+      "content-type": "application/json; charset=utf-8",
+      "trace-id": "some-trace-id"
+    },
+    "body": [
+      {
+        "id": 1,
+        "title": "Rum"
+      },
+      {
+        "id": 2,
+        "title": "Wine"
+      }
+    ]
+  }
+}
