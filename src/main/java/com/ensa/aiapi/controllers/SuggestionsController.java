@@ -19,6 +19,6 @@ public class SuggestionsController {
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<List<String>> getSuggestedUrlsSearches(
             @RequestParam("url") String url){
-        return ResponseEntity.ok(suggestionsService.getSuggestedUrlsSearches(url));
+        return ResponseEntity.ok().body(suggestionsService.getSuggestedUrlsSearches(url));
     }
 }
