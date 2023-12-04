@@ -2,23 +2,20 @@ pipeline {
     agent any
 
     environment {
-        registryName = "acr017h3w873rnwuqwuh/scraping-api"
+        registryName = "acr017h3w873rnwuqwuh/api"
         registryCredential = 'ACR'
         dockerImage = ''
         registryUrl = 'acr017h3w873rnwuqwuh.azurecr.io'
         mvnHome = tool name: 'maven', type: 'maven'
         mvnCMD = "${mvnHome}/bin/mvn "
-  
+        imageTag = "latest-${BUILD_NUMBER}" // Default tag with build number
     }
 
     stages {
         stage('Checkout') {
             steps {
                 script {
-                    // Clean workspace before checking out the code
                     deleteDir()
-
-                    // Checkout the code from the specified Git repository and branch
                     checkout([$class: 'GitSCM',
                               branches: [[name: 'main']],
                               doGenerateSubmoduleConfigurations: false,
@@ -33,48 +30,50 @@ pipeline {
             steps {
                 script {
                     dir('Api') {
-                         sh "${mvnCMD} clean install"
-                    }
-                }
-            }
-        }
-        
-        stage('SonarQube Analysis') {
-            steps {
-                script {
-                    withSonarQubeEnv('Sonar') {
-                        dir('Api'){
-                        sh "${mvnCMD} sonar:sonar"
-                        }
-                    }
-                    slackSend message: 'AI-Extension backend api  : sonar analysis completed  check http://20.228.254.202:9000/'
-                }
-            }
-        }
-       
-        stage('Build Docker image') {
-            steps {
-                script {
-                     dir('Api') {
-                        // Assuming Dockerfile is present in the repository
-                        dockerImage = docker.build(registryName, "-f Dockerfile .")
+                        sh "${mvnCMD} clean install"
                     }
                 }
             }
         }
 
-        stage('Push Image to ACR ') {
+        stage('SonarQube Analysis') {
+            steps {
+                script {
+                    withSonarQubeEnv('Sonar') {
+                        dir('Api'){
+                            sh "${mvnCMD} sonar:sonar"
+                        }
+                    }
+                    slackSend message: 'AI-Extension backend api: Sonar analysis completed. Check http://20.228.254.202:9000/'
+                }
+            }
+        }
+
+        stage('Build Docker image') {
+            steps {
+                script {
+                    dir('Api') {
+                        // Append the build number to the "latest" tag
+                        imageTag = "latest-${BUILD_NUMBER}"
+                        dockerImage = docker.build(registryName, "-f Dockerfile . --tag ${imageTag}")
+                    }
+                }
+            }
+        }
+
+        stage('Push Image to ACR') {
             steps {
                 script {
                     docker.withRegistry("http://${registryUrl}", registryCredential) {
-                        dockerImage.push("latest")
+                        dockerImage.push("${imageTag}")
                     }
                 }
-                slackSend message: 'AI-Extension backend api  : New Artifact was Pushed to ACR Repo'
+                slackSend message: "AI-Extension backend api: New Artifact was Pushed to ACR Repo with tag ${imageTag}"
             }
         }
     }
 }
+
 /*
 node {
     def repourl = "${REGISTRY_URL}/${PROJECT_ID}/${ARTIFACT_REGISTRY}"
