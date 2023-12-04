@@ -2,10 +2,10 @@ pipeline {
     agent any
 
     environment {
-        registryName = "acr017h3w873rnwuqwuh/api"
-        registryCredential = 'ACR'
+        registryName = 'sk09devops/ai-project' // Updated Docker Hub repository name
+        registryCredential = 'DOCKERHUB' // Updated credential name
         dockerImage = ''
-        registryUrl = 'acr017h3w873rnwuqwuh.azurecr.io'
+        registryUrl = ''
         mvnHome = tool name: 'maven', type: 'maven'
         mvnCMD = "${mvnHome}/bin/mvn "
         imageTag = "latest-${BUILD_NUMBER}" // Default tag with build number
@@ -61,14 +61,14 @@ pipeline {
             }
         }
 
-        stage('Push Image to ACR') {
+        stage('Push Image to Docker Hub') {
             steps {
                 script {
-                    docker.withRegistry("http://${registryUrl}", registryCredential) {
+                    docker.withRegistry("https://registry.hub.docker.com", registryCredential) {
                         dockerImage.push("${imageTag}")
                     }
                 }
-                slackSend message: "AI-Extension backend api: New Artifact was Pushed to ACR Repo with tag ${imageTag}"
+                slackSend message: "AI-Extension backend api: New Artifact was Pushed to Docker Hub Repo with tag ${imageTag}"
             }
         }
     }
