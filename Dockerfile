@@ -1,9 +1,12 @@
-FROM openjdk:17
+
+FROM arm64v8/openjdk:17
 
 ARG JAR_FILE=target/*.jar
 
-COPY ${JAR_FILE} productservice.jar
+WORKDIR /app
 
-ENTRYPOINT ["java", "-jar", "/api.jar"]
+COPY ${JAR_FILE} api.jar
+
+ENTRYPOINT ["java", "-jar", "/app/api.jar"]
 
 EXPOSE 8080
