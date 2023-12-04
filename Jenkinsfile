@@ -43,7 +43,9 @@ pipeline {
             steps {
                 script {
                     withSonarQubeEnv('Sonar') {
+                        dir('Api'){
                         sh "${mvnCMD} sonar:sonar"
+                        }
                     }
                     slackSend message: 'AI-Extension backend api  : sonar analysis completed  check http://20.228.254.202:9000/'
                 }
