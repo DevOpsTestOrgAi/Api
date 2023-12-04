@@ -2,23 +2,14 @@ pipeline {
     agent any
 
     environment {
-        registryName = "acr017h3w873rnwuqwuh/scraping-api"
-        registryCredential = 'ACR'
-        dockerImage = ''
-        registryUrl = 'acr017h3w873rnwuqwuh.azurecr.io'
-        mvnHome = tool name: 'maven', type: 'maven'
-        mvnCMD = "${mvnHome}/bin/mvn "
-  
+        // ... (your existing environment variables)
     }
 
     stages {
         stage('Checkout') {
             steps {
                 script {
-                    // Clean workspace before checking out the code
                     deleteDir()
-
-                    // Checkout the code from the specified Git repository and branch
                     checkout([$class: 'GitSCM',
                               branches: [[name: 'main']],
                               doGenerateSubmoduleConfigurations: false,
@@ -33,42 +24,46 @@ pipeline {
             steps {
                 script {
                     dir('Api') {
-                         sh "${mvnCMD} clean install"
+                        sh "${mvnCMD} clean install"
                     }
                 }
             }
         }
-        
+
         stage('SonarQube Analysis') {
-              withSonarQubeEnv('Sonar'){
-                sh "${mvnCMD} sonar:sonar"
-              }
-               slackSend message: 'AI-Extension backend api  : sonar analysis completed  check http://20.228.254.202:9000/'
+            steps {
+                script {
+                    withSonarQubeEnv('Sonar') {
+                        sh "${mvnCMD} sonar:sonar"
+                    }
+                    slackSend message: 'AI-Extension backend api  : sonar analysis completed  check http://20.228.254.202:9000/'
+                }
+            }
         }
-       
+
         stage('Build Docker image') {
             steps {
                 script {
-                     dir('Api') {
-                        // Assuming Dockerfile is present in the repository
+                    dir('Api') {
                         dockerImage = docker.build(registryName, "-f Dockerfile .")
                     }
                 }
             }
         }
 
-        stage('Push Image to ACR ') {
+        stage('Push Image to ACR') {
             steps {
                 script {
                     docker.withRegistry("http://${registryUrl}", registryCredential) {
                         dockerImage.push("latest")
                     }
+                    slackSend message: 'AI-Extension backend api  : New Artifact was Pushed to ACR Repo'
                 }
-                slackSend message: 'AI-Extension backend api  : New Artifact was Pushed to ACR Repo'
             }
         }
     }
 }
+
 /*
 node {
     def repourl = "${REGISTRY_URL}/${PROJECT_ID}/${ARTIFACT_REGISTRY}"
