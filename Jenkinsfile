@@ -86,7 +86,12 @@ pipeline {
                     def manifestsDir = "${cloneDir}/k8s"
 
                   
-                    sh "sed -i 's|sk09devops/ai-project:latest|${registryName}:${imageTag}|' ${manifestsDir}/api-deployment.yml"
+                     // Construct the new image line
+                    def newImageLine = "image: ${registryName}:${imageTag}"
+            
+                     // Use sed to replace the existing image line
+                    sh "sed -i 's|image: sk09devops/ai-project:latest.*|${newImageLine}|' ${manifestsDir}/api-deployment.yml"
+
 
                     
                     withCredentials([usernamePassword(credentialsId: 'git',passwordVariable: 'GIT_PASSWORD' , usernameVariable: 'GIT_USERNAME')]) {
