@@ -71,6 +71,35 @@ pipeline {
                 //slackSend message: "AI-Extension backend api: New Artifact was Pushed to Docker Hub Repo with tag ${imageTag}"
             }
         }
+        stage('Update Manifests and Push to Git') {
+            steps {
+                script {
+                  
+                    def cloneDir = 'GitOps'
+
+                  
+                    if (!fileExists(cloneDir)) {
+                        sh "git clone https://github.com/DevOpsTestOrgAi/GitOps.git ${cloneDir}"
+                    }
+
+                   
+                    def manifestsDir = "${cloneDir}/k8s"
+
+                  
+                    sh "sed -i 's|sk09devops/ai-project:latest|${registryName}:${imageTag}|' ${manifestsDir}/api-deployment.yml"
+
+                    
+                    withCredentials([usernamePassword(credentialsId: 'git')]) {
+                        dir(cloneDir) {
+                            sh "git add ."
+                            sh "git commit -m 'Update image tag in Kubernetes manifests'"
+                            sh "git push ${registryCredential} https://github.com/DevOpsTestOrgAi/GitOps.git main"
+                        }
+                    }
+                }
+            }
+        }
+
     }
 }
 
