@@ -71,36 +71,32 @@ pipeline {
                 //slackSend message: "AI-Extension backend api: New Artifact was Pushed to Docker Hub Repo with tag ${imageTag}"
             }
         }
-        stage('Update Manifests and Push to Git') {
-            steps {
-                script {
-                  
-                    def cloneDir = 'GitOps'
+      stage('Update Manifests and Push to Git') {
+    steps {
+        script {
+            def cloneDir = 'GitOps'
 
-                  
-                    if (!fileExists(cloneDir)) {
-                        sh "git clone https://github.com/DevOpsTestOrgAi/GitOps.git ${cloneDir}"
-                    }
-
-                   
-                    def manifestsDir = "${cloneDir}/k8s"
-
-                  
-                    sh "sed -i 's|sk09devops/ai-project:latest|${registryName}:${imageTag}|' ${manifestsDir}/api-deployment.yml"
-
-                    
-                    withCredentials([usernamePassword(credentialsId: 'git',passwordVariable: 'GIT_PASSWORD' , usernameVariable: 'GIT_USERNAME')]) {
-                        dir(cloneDir) {
-                            sh "git config user.email mohamedammaha2020@gmail.com"
-                            sh "git config user.name medXPS"
-                            sh "git add ."
-                            sh "git commit -m 'Update image tag in Kubernetes manifests'"
-                            sh "git push  https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/DevOpsTestOrgAi/GitOps.git HEAD:main"
-                        }
-                    }
-                }
+            if (!fileExists(cloneDir)) {
+                sh "git clone https://github.com/DevOpsTestOrgAi/GitOps.git ${cloneDir}"
             }
+
+            def manifestsDir = "${cloneDir}/k8s"
+            def sedCommand = "s|sk09devops/ai-project:latest|${registryName}:${imageTag}|"
+             def commitMessage = "Update image tag to ${registryName}:${imageTag}"
+            
+            sh "sed -i '${sedCommand}' ${manifestsDir}/api-deployment.yml"
+
+            // Configure Git user information
+            sh "git config user.email mohamedammaha2020@gmail.com"
+            sh "git config user.name medXPS"
+            
+            // Commit and push changes
+            sh "git -C ${cloneDir} add ."
+            sh "git -C ${cloneDir} commit -m '${commitMessage}'"
+            sh "git -C ${cloneDir} push origin main"
         }
+    }
+}
 
     }
 }
