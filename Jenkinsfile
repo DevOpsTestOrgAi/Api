@@ -89,7 +89,7 @@ pipeline {
                     sh "sed -i 's|sk09devops/ai-project:latest|${registryName}:${imageTag}|' ${manifestsDir}/api-deployment.yml"
 
                     
-                    withCredentials([usernamePassword(credentialsId: 'git')]) {
+                    withCredentials([usernamePassword(credentialsId: 'git',variable: 'GIT_TOKEN')]) {
                         dir(cloneDir) {
                             sh "git add ."
                             sh "git commit -m 'Update image tag in Kubernetes manifests'"
