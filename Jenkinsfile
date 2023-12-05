@@ -81,12 +81,14 @@ pipeline {
                     if (!fileExists(cloneDir)) {
                         sh "git clone https://github.com/DevOpsTestOrgAi/GitOps.git ${cloneDir}"
                     }
-+
+
+                   
                     def manifestsDir = "${cloneDir}/k8s"
 
-                     def sedCommand = "s|sk09devops/ai-project:latest|${registryName}:${imageTag}|"
-                     sh "sed -i '${sedCommand}' ${manifestsDir}/api-deployment.yml"
+                  
+                    sh "sed -i 's|sk09devops/ai-project:latest|${registryName}:${imageTag}|' ${manifestsDir}/api-deployment.yml"
 
+                    
                     withCredentials([usernamePassword(credentialsId: 'git',passwordVariable: 'GIT_PASSWORD' , usernameVariable: 'GIT_USERNAME')]) {
                         dir(cloneDir) {
                             sh "git config user.email mohamedammaha2020@gmail.com"
