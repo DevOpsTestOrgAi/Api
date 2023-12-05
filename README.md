@@ -22,4 +22,4 @@ Retrieve suggested URLs based on the input URL.
   GET /api/v1/suggestions?url=https://www.jumia.ma/smart-watch-t500-montre-intelligente-smart-watsh-full-appel-etanche-frequence-cardiaque-58887120.html
 
 - **Response**
-    - A list of links to suggested results that match the given product
+    - A list of links, suggested results that match the given product
