@@ -86,10 +86,9 @@ pipeline {
                     def manifestsDir = "${cloneDir}/k8s"
 
                   
-                     // Construct the new image line
+                    
                     def newImageLine = "image: ${registryName}:${imageTag}"
             
-                     // Use sed to replace the existing image line
                     sh "sed -i 's|image: sk09devops/ai-project:latest.*|${newImageLine}|' ${manifestsDir}/api-deployment.yml"
 
 
@@ -103,6 +102,7 @@ pipeline {
                             sh "git push  https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/DevOpsTestOrgAi/GitOps.git HEAD:main"
                         }
                     }
+                    sh "rm -rf ${cloneDir}"
                 }
             }
         }
