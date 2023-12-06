@@ -15,8 +15,8 @@ public class SuggestionsService {
     public List<String> getSuggestedUrlsSearches(
             String url){
         // 1- Scrape the page by calling the scraping api
-        ScrapingApiOutput scrapingApiOutput= feignAIInterface.getSuggestedCategoryAndTitle(url).getBody();
-        if(scrapingApiOutput==null) return new ArrayList<>(); // Return a good format later
+        //ScrapingApiOutput scrapingApiOutput= feignAIInterface.getSuggestedCategoryAndTitle(url).getBody();
+        //if(scrapingApiOutput==null) return new ArrayList<>(); // Return a good format later
 
         // 2- Feed the AI the output of the scraping api
         // List<String> keywords = feignAIInterface.getSuggestedKeywordsByCategory(scrapingApiOutput.getCategory()).getBody();

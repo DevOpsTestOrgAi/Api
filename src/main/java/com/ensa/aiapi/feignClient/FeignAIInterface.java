@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-@FeignClient(name = "scraping-searching-api",url = "http://172.30.0.2:9999")
+@FeignClient(name = "scraping-searching-api",url = "http://172.30.0.2:9999/")
 public interface FeignAIInterface {
     @RequestMapping(value = "/scraper", method = RequestMethod.GET)
     ResponseEntity<ScrapingApiOutput> getSuggestedCategoryAndTitle(@RequestParam("url") String url);
