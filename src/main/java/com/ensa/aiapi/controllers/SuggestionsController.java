@@ -16,14 +16,14 @@ import java.util.List;
 public class SuggestionsController {
     private final SuggestionsService suggestionsService;
     // Calling the scraping api to retrieve the products using the given url
-//    @RequestMapping(method = RequestMethod.GET)
-//    public ResponseEntity<List<String>> getSuggestedUrlsSearches(
-//            @RequestParam("url") String url){
-//        return ResponseEntity.ok().body(suggestionsService.getSuggestedUrlsSearches(url));
-//    }
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<String> test(
-            ){
-        return ResponseEntity.ok().body("hello");
+    public ResponseEntity<List<String>> getSuggestedUrlsSearches(
+            @RequestParam("url") String url){
+        return ResponseEntity.ok().body(suggestionsService.getSuggestedUrlsSearches(url));
     }
+//    @RequestMapping(method = RequestMethod.GET)
+//    public ResponseEntity<String> test(
+//            ){
+//        return ResponseEntity.ok().body("hello");
+//    }
 }
