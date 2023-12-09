@@ -6,6 +6,7 @@ import com.ensa.aiapi.model.Product;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,7 @@ public class SuggestionService {
             List<Product> products = jumiaSearcher.searchJumia(keyword);
             allProducts.addAll(products);
         }
+        Collections.shuffle(allProducts);
         return allProducts;
     }
 }
