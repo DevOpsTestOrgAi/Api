@@ -4,7 +4,7 @@ import lombok.Data;
 
 import java.util.List;
 @Data
-public class JumiaSearchResponse {
+public class JumiaSearchResponse  {
     private String errorMessage;
     private List<JumiaProduct> products;
 
