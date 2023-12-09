@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/api/v1/suggestions")
+@RequestMapping(value = "/api/v2/suggestions")
 public class FakeController {
 
     @RequestMapping(method = RequestMethod.GET)
