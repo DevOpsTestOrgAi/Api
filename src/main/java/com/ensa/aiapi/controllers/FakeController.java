@@ -1,5 +1,6 @@
 package com.ensa.aiapi.controllers;
 
+import com.ensa.aiapi.model.Product;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
@@ -52,17 +53,5 @@ public class FakeController {
         }
     }
 
-    private static class Product {
-        public String title;
-        public String imageUrl;
-        public String productUrl;
-        public String price;
 
-        public Product(String title, String imageUrl, String productUrl, String price) {
-            this.title = title;
-            this.imageUrl = imageUrl;
-            this.productUrl = productUrl;
-            this.price = price;
-        }
-    }
 }

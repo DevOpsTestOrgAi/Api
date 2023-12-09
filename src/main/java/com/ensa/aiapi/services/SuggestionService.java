@@ -1,22 +1,19 @@
 package com.ensa.aiapi.services;
 
 import com.ensa.aiapi.feignClient.FeignAIInterface;
-import com.ensa.aiapi.model.JumiaProduct;
 import com.ensa.aiapi.model.JumiaResponse;
-import com.ensa.aiapi.model.JumiaSearchResponse;
-import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.ensa.aiapi.model.Product;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 @Service
 public class SuggestionService {
-    @Autowired JumiaScraper jumiaScraper;
+    @Autowired
+    JumiaScraper jumiaScraper;
 
     @Autowired
     private FeignAIInterface aiAppFeignClient;
@@ -24,24 +21,24 @@ public class SuggestionService {
     @Autowired
     private JumiaSearcher jumiaSearcher;
 
-    public List<JumiaSearchResponse> getSuggestedProducts(String url) {
+    public List<Product> getSuggestedProducts(String url) {
 
         JumiaResponse jumiaResponse = jumiaScraper.scrapeJumia(url);
         List<String> suggestedKeywords = aiAppFeignClient.getSuggestedKeywords(jumiaResponse.getCategory());
-        List<JumiaSearchResponse> jumiaSearchResponseList = new ArrayList<>();
+        List<Product> allProducts = new ArrayList<>();
 
         for (String keyword : suggestedKeywords) {
             try {
                 // Introduce a 1-second delay
-                Thread.sleep(1000); // 1000 milliseconds = 1 second
+                Thread.sleep(500); // 1000 milliseconds = 1 second
             } catch (InterruptedException e) {
                 // Handle the exception (e.g., log it)
                 e.printStackTrace();
             }
 
-            JumiaSearchResponse jumiaSearchResponses = jumiaSearcher.searchJumia(keyword);
-            jumiaSearchResponseList.add(jumiaSearchResponses);
+            List<Product> products = jumiaSearcher.searchJumia(keyword);
+            allProducts.addAll(products);
         }
-        return jumiaSearchResponseList;
+        return allProducts;
     }
 }

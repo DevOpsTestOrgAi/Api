@@ -1,6 +1,5 @@
 package com.ensa.aiapi.services;
-import com.ensa.aiapi.model.JumiaProduct;
-import com.ensa.aiapi.model.JumiaSearchResponse;
+import com.ensa.aiapi.model.Product;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -8,18 +7,17 @@ import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Service
 public class JumiaSearcher {
 
-    public JumiaSearchResponse searchJumia(String keyword) {
+    public List<Product> searchJumia(String keyword) {
         try {
             String searchUrl = "https://www.jumia.ma/catalog/?q=" + keyword;
             Document document = Jsoup.connect(searchUrl).get();
 
-            List<JumiaProduct> products = new ArrayList<>();
+            List<Product> products = new ArrayList<>();
 
             // Select product elements within the specified class
             Elements productElements = document.select("div.-paxs.row._no-g._4cl-3cm-shs article.prd._fb.col.c-prd");
@@ -30,7 +28,7 @@ public class JumiaSearcher {
                 String productUrl = "https://www.jumia.ma" + productElement.select("a.core").attr("href");
                 String price = productElement.select("div.prc").text();
 
-                products.add(new JumiaProduct(title, imageUrl, productUrl, price));
+                products.add(new Product(title, imageUrl, productUrl, price));
 
                 // Break the loop if we have collected 10 products
                 if (products.size() >= 5) {
@@ -38,9 +36,10 @@ public class JumiaSearcher {
                 }
             }
 
-            return new JumiaSearchResponse("", products);
-        } catch (Exception e) {
-            return new JumiaSearchResponse("Error occurred during searching", Collections.emptyList());
+            return products;
+        } catch (Exception ignored) {
+            return  null;
+
         }
     }
 }
