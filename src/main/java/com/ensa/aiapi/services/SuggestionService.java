@@ -23,24 +23,32 @@ public class SuggestionService {
     private JumiaSearcher jumiaSearcher;
 
     public List<Product> getSuggestedProducts(String url) {
-
         JumiaResponse jumiaResponse = jumiaScraper.scrapeJumia(url);
         List<String> suggestedKeywords = aiAppFeignClient.getSuggestedKeywords(jumiaResponse.getCategory());
         List<Product> allProducts = new ArrayList<>();
 
         for (String keyword : suggestedKeywords) {
             try {
-                // Introduce a 1-second delay
-                Thread.sleep(500); // 1000 milliseconds = 1 second
+                // Introduce a 500-millisecond delay
+                Thread.sleep(500);
             } catch (InterruptedException e) {
-                // Handle the exception (e.g., log it)
+                // Preserve the interrupted status
+                Thread.currentThread().interrupt();
+                // Log or handle the exception appropriately
                 e.printStackTrace();
             }
 
             List<Product> products = jumiaSearcher.searchJumia(keyword);
-            allProducts.addAll(products);
+
+            // Check for null before adding to allProducts
+            if (products != null) {
+                allProducts.addAll(products);
+            }
         }
+
+        // Shuffle the list after adding all products
         Collections.shuffle(allProducts);
+
         return allProducts;
     }
 }
