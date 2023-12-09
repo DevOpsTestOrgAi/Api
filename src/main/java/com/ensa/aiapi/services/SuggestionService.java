@@ -26,14 +26,22 @@ public class SuggestionService {
 
     public List<JumiaSearchResponse> getSuggestedProducts(String url) {
 
-        JumiaResponse jumiaResponse=jumiaScraper.scrapeJumia(url);
+        JumiaResponse jumiaResponse = jumiaScraper.scrapeJumia(url);
         List<String> suggestedKeywords = aiAppFeignClient.getSuggestedKeywords(jumiaResponse.getCategory());
-        List<JumiaSearchResponse> jumiaSearchResponseList=new ArrayList<>();
+        List<JumiaSearchResponse> jumiaSearchResponseList = new ArrayList<>();
+
         for (String keyword : suggestedKeywords) {
-            JumiaSearchResponse jumiaSearchResponses=jumiaSearcher.searchJumia(keyword);
+            try {
+                // Introduce a 1-second delay
+                Thread.sleep(1000); // 1000 milliseconds = 1 second
+            } catch (InterruptedException e) {
+                // Handle the exception (e.g., log it)
+                e.printStackTrace();
+            }
+
+            JumiaSearchResponse jumiaSearchResponses = jumiaSearcher.searchJumia(keyword);
             jumiaSearchResponseList.add(jumiaSearchResponses);
         }
         return jumiaSearchResponseList;
     }
 }
-
