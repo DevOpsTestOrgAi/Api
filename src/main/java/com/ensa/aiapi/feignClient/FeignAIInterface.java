@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-@FeignClient(name = "ai-model-app",url = "http://ai-model-app-svc")
+@FeignClient(name = "ai-v1-model-app",url = "http://ai-v1-model-app-svc")
 public interface FeignAIInterface {
-    @GetMapping("/api/v2/suggest-keywords")
+    @GetMapping("/ai/suggest")
     List<String> getSuggestedKeywords(
             @RequestParam String category);
 }
