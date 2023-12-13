@@ -28,16 +28,6 @@ public class SuggestionService {
         List<Product> allProducts = new ArrayList<>();
 
         for (String keyword : suggestedKeywords) {
-            try {
-                // Introduce a 500-millisecond delay
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                // Preserve the interrupted status
-                Thread.currentThread().interrupt();
-                // Log or handle the exception appropriately
-                e.printStackTrace();
-            }
-
             List<Product> products = jumiaSearcher.searchJumia(keyword);
 
             // Check for null before adding to allProducts
