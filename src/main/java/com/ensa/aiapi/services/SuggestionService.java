@@ -28,6 +28,8 @@ public class SuggestionService {
         List<Product> allProducts = new ArrayList<>();
 
         for (String keyword : suggestedKeywords) {
+
+
             List<Product> products = jumiaSearcher.searchJumia(keyword);
 
             // Check for null before adding to allProducts
