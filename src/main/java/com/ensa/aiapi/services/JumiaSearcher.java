@@ -30,8 +30,8 @@ public class JumiaSearcher {
 
                 products.add(new Product(title, imageUrl, productUrl, price));
 
-                // Break the loop if we have collected 10 products
-                if (products.size() >= 5) {
+                // Break the loop if we have collected 20 products
+                if (products.size() >= 20) {
                     break;
                 }
             }
